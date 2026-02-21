@@ -1,0 +1,306 @@
+openapi: 3.1.1
+info:
+  description: "SMS, phone verification, and webhook APIs for Mauritania."
+  title: Moorsyl API
+  version: 1.0.0
+externalDocs:
+  description: Documentation
+  url: https://docs.moorsyl.com
+servers:
+- url: https://api.moorsyl.com/api
+security:
+- ApiKey: []
+paths:
+  /sms/get:
+    post:
+      description: Retrieve the current status and details of a previously sent SMS
+        message by its ID.
+      operationId: sms.get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sms_get_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sms_get_200_response'
+          description: OK
+      summary: Get SMS status
+      tags:
+      - SMS
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /sms:
+    post:
+      description: Send a text message to a Mauritanian phone number. The message
+        is queued immediately and delivered through Mauritania-optimized carrier routing.
+      operationId: sms.send
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sms_send_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sms_send_200_response'
+          description: OK
+      summary: Send an SMS
+      tags:
+      - SMS
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /verify/send:
+    post:
+      description: Send a one-time passcode via SMS to the specified Mauritanian phone
+        number. Returns a verificationId to use with the check endpoint.
+      operationId: verify.send
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/verify_send_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/verify_send_200_response'
+          description: OK
+      summary: Send a verification code
+      tags:
+      - Verify
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /verify/check:
+    post:
+      description: "Validate the one-time code entered by the user and return approved\
+        \ for a correct match, or denied when the code is incorrect, expired, or already\
+        \ used."
+      operationId: verify.check
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/verify_check_request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/verify_check_200_response'
+          description: OK
+      summary: Check a verification code
+      tags:
+      - Verify
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /verify/get:
+    post:
+      description: Retrieve the current status and details of a phone verification
+        by its ID.
+      operationId: verify.get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/verify_send_200_response'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/verify_get_200_response'
+          description: OK
+      summary: Get verification status
+      tags:
+      - Verify
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+components:
+  schemas:
+    verify_check_request:
+      properties:
+        verificationId:
+          type: string
+        code:
+          maxLength: 6
+          minLength: 6
+          type: string
+      required:
+      - code
+      - verificationId
+    sms_get_request:
+      properties:
+        messageId:
+          type: string
+      required:
+      - messageId
+    sms_send_request:
+      properties:
+        to:
+          pattern: "^\\+222[234]\\d{7}$"
+          type: string
+        from:
+          maxLength: 11
+          minLength: 1
+          type: string
+        body:
+          maxLength: 1600
+          minLength: 1
+          type: string
+        idempotencyKey:
+          maxLength: 128
+          minLength: 8
+          type: string
+      required:
+      - body
+      - to
+    sms_send_200_response:
+      example:
+        organizationId: organizationId
+        idempotencyKey: idempotencyKey
+        accepted: ""
+      properties:
+        accepted: {}
+        idempotencyKey:
+          type: string
+        organizationId:
+          type: string
+      required:
+      - accepted
+      - idempotencyKey
+      - organizationId
+    sms_get_200_response:
+      example:
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        from: from
+        id: id
+        to: to
+        body: body
+        status: pending
+        updatedAt: 2000-01-23T04:56:07.000+00:00
+      properties:
+        id:
+          type: string
+        to:
+          type: string
+        from:
+          type: string
+        body:
+          type: string
+        status:
+          enum:
+          - pending
+          - processing
+          - sent
+          - failed
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+          x-native-type: date
+        updatedAt:
+          format: date-time
+          type: string
+          x-native-type: date
+      required:
+      - body
+      - createdAt
+      - from
+      - id
+      - status
+      - to
+      - updatedAt
+    verify_send_200_response:
+      example:
+        verificationId: verificationId
+      properties:
+        verificationId:
+          type: string
+      required:
+      - verificationId
+    verify_check_200_response:
+      example:
+        status: approved
+      properties:
+        status:
+          enum:
+          - approved
+          - denied
+          type: string
+      required:
+      - status
+    verify_send_request:
+      properties:
+        to:
+          pattern: "^\\+222[234]\\d{7}$"
+          type: string
+      required:
+      - to
+    verify_get_200_response:
+      example:
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        id: id
+        to: to
+        expiresAt: 2000-01-23T04:56:07.000+00:00
+        status: pending
+        attempts: 0.8008281904610115
+        updatedAt: 2000-01-23T04:56:07.000+00:00
+      properties:
+        id:
+          type: string
+        to:
+          type: string
+        status:
+          enum:
+          - pending
+          - approved
+          - expired
+          - canceled
+          type: string
+        attempts:
+          type: number
+        expiresAt:
+          format: date-time
+          type: string
+          x-native-type: date
+        createdAt:
+          format: date-time
+          type: string
+          x-native-type: date
+        updatedAt:
+          format: date-time
+          type: string
+          x-native-type: date
+      required:
+      - attempts
+      - createdAt
+      - expiresAt
+      - id
+      - status
+      - to
+      - updatedAt
+  securitySchemes:
+    ApiKey:
+      description: "Secret key (sk_…) for all endpoints, or publishable key (pk_…\
+        ) for Verify only."
+      in: header
+      name: x-api-key
+      type: apiKey
+
