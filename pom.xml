@@ -6,7 +6,7 @@
     <artifactId>moorsyl-java</artifactId>
     <packaging>jar</packaging>
     <name>moorsyl-java</name>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>Moorsyl API client for Java</description>
     <url>https://github.com/SoftwareSavants/moorsyl-java</url>
     <scm>
