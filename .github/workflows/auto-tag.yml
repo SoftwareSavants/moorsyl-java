@@ -88,3 +88,4 @@ jobs:
           git tag "v$VERSION"
           git push origin main
           git push origin "v$VERSION"
+          git push origin main:refs/heads/sdk/auto-update --force
