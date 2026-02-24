@@ -1,39 +1,38 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.moorsyl</groupId>
     <artifactId>moorsyl-java</artifactId>
     <packaging>jar</packaging>
     <name>moorsyl-java</name>
     <version>1.0.0</version>
-    <url>https://github.com/openapitools/openapi-generator</url>
-    <description>OpenAPI Java</description>
+    <description>Moorsyl API client for Java</description>
+    <url>https://github.com/SoftwareSavants/moorsyl-java</url>
     <scm>
-        <connection>scm:git:git@github.com:openapitools/openapi-generator.git</connection>
-        <developerConnection>scm:git:git@github.com:openapitools/openapi-generator.git</developerConnection>
-        <url>https://github.com/openapitools/openapi-generator</url>
+        <connection>scm:git:git://github.com/SoftwareSavants/moorsyl-java.git</connection>
+        <developerConnection>scm:git:ssh://github.com:SoftwareSavants/moorsyl-java.git</developerConnection>
+        <url>https://github.com/SoftwareSavants/moorsyl-java</url>
     </scm>
 
     <licenses>
         <license>
-            <name>Unlicense</name>
-            <url>http://unlicense.org</url>
-            <distribution>repo</distribution>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
         </license>
     </licenses>
 
     <developers>
         <developer>
-            <name>OpenAPI-Generator Contributors</name>
-            <email>team@openapitools.org</email>
-            <organization>OpenAPITools.org</organization>
-            <organizationUrl>http://openapitools.org</organizationUrl>
+            <name>Moorsyl</name>
+            <email>support@moorsyl.com</email>
+            <organization>SoftwareSavants</organization>
         </developer>
     </developers>
 
     <build>
         <plugins>
-           <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
@@ -43,7 +42,8 @@
                     <maxmem>512m</maxmem>
                     <compilerArgs>
                         <arg>-Xlint:all</arg>
-                        <arg>-J-Xss4m</arg><!-- Compiling the generated JSON.java file may require larger stack size. -->
+                        <arg>-J-Xss4m</arg><!-- Compiling the generated JSON.java file may require
+                        larger stack size. -->
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -83,7 +83,8 @@
                     <threadCount>10</threadCount>
                 </configuration>
                 <dependencies>
-                    <!--Custom provider and engine for Junit 5 to surefire-->
+                    <!--Custom
+                    provider and engine for Junit 5 to surefire-->
                     <dependency>
                         <groupId>org.junit.jupiter</groupId>
                         <artifactId>junit-jupiter-engine</artifactId>
@@ -193,55 +194,82 @@
                  Ref: https://github.com/diffplug/spotless/tree/main/plugin-maven
             -->
             <plugin>
-              <groupId>com.diffplug.spotless</groupId>
-              <artifactId>spotless-maven-plugin</artifactId>
-              <version>${spotless.version}</version>
-              <configuration>
-                <formats>
-                  <!-- you can define as many formats as you want, each is independent -->
-                  <format>
-                    <!-- define the files to apply to -->
-                    <includes>
-                      <include>.gitignore</include>
-                    </includes>
-                    <!-- define the steps to apply to those files -->
-                    <trimTrailingWhitespace/>
-                    <endWithNewline/>
-                    <indent>
-                      <spaces>true</spaces> <!-- or <tabs>true</tabs> -->
-                      <spacesPerTab>4</spacesPerTab> <!-- optional, default is 4 -->
-                    </indent>
-                  </format>
-                </formats>
-                <!-- define a language-specific format -->
-                <java>
-                  <!-- no need to specify files, inferred automatically, but you can if you want -->
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
+                <configuration>
+                    <formats>
+                        <!-- you can define as many formats as you want, each is independent -->
+                        <format>
+                            <!-- define the files to apply to -->
+                            <includes>
+                                <include>.gitignore</include>
+                            </includes>
+                            <!-- define the steps to apply to those files -->
+                            <trimTrailingWhitespace />
+                            <endWithNewline />
+                            <indent>
+                                <spaces>true</spaces> <!-- or <tabs>true</tabs> -->
+                                <spacesPerTab>4</spacesPerTab> <!-- optional, default is 4 -->
+                            </indent>
+                        </format>
+                    </formats>
+                    <!-- define a language-specific format -->
+                    <java>
+                        <!-- no need to specify files, inferred automatically, but you can if you
+                        want -->
 
-                  <!-- apply a specific flavor of google-java-format and reflow long strings -->
-                  <googleJavaFormat>
-                    <version>1.8</version>
-                    <style>AOSP</style>
-                    <reflowLongStrings>true</reflowLongStrings>
-                  </googleJavaFormat>
+                        <!-- apply a specific flavor of google-java-format and reflow long strings -->
+                        <googleJavaFormat>
+                            <version>1.8</version>
+                            <style>AOSP</style>
+                            <reflowLongStrings>true</reflowLongStrings>
+                        </googleJavaFormat>
 
-                  <removeUnusedImports/>
-                  <importOrder/>
+                        <removeUnusedImports />
+                        <importOrder />
 
-                </java>
-              </configuration>
+                    </java>
+                </configuration>
             </plugin>
         </plugins>
     </build>
 
     <profiles>
         <profile>
-            <id>sign-artifacts</id>
+            <id>release</id>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.3.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.11.2</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.2.1</version>
+                        <version>3.2.7</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -337,4 +365,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spotless.version>2.43.0</spotless.version>
     </properties>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>central</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>central</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 </project>

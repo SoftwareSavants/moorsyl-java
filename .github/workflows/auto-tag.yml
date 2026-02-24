@@ -1,0 +1,90 @@
+name: Auto Tag SDK Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'sdk/auto-update'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.RELEASE_TOKEN }}
+          fetch-depth: 0
+
+      - name: Determine bump type
+        id: bump
+        run: |
+          LABELS='${{ toJson(github.event.pull_request.labels.*.name) }}'
+          if echo "$LABELS" | grep -q '"release:major"'; then
+            echo "type=major" >> "$GITHUB_OUTPUT"
+          elif echo "$LABELS" | grep -q '"release:minor"'; then
+            echo "type=minor" >> "$GITHUB_OUTPUT"
+          else
+            echo "type=patch" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Compute new version
+        id: version
+        run: |
+          CURRENT="$(grep -m1 '<version>' pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          case "${{ steps.bump.outputs.type }}" in
+            major) NEW="$((MAJOR + 1)).0.0" ;;
+            minor) NEW="$MAJOR.$((MINOR + 1)).0" ;;
+            *) NEW="$MAJOR.$MINOR.$((PATCH + 1))" ;;
+          esac
+          echo "new_version=$NEW" >> "$GITHUB_OUTPUT"
+
+      - name: Update pom.xml version
+        run: |
+          NEW="${{ steps.version.outputs.new_version }}"
+          sed -i "0,/<version>.*<\/version>/s|<version>.*</version>|<version>$NEW</version>|" pom.xml
+
+      - name: Update CHANGELOG.md from PR body
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          VERSION="${{ steps.version.outputs.new_version }}"
+          FILE="CHANGELOG.md"
+
+          if [ ! -f "$FILE" ]; then
+            printf "# Changelog\n\n" > "$FILE"
+          fi
+
+          SECTION="$(printf '%s\n' "$PR_BODY" | awk '
+            BEGIN{capture=0}
+            /^##[[:space:]]+Changelog[[:space:]]*$/ {capture=1; next}
+            /^##[[:space:]]+/ && capture==1 {exit}
+            capture==1 {print}
+          ' | sed '/^[[:space:]]*$/d')"
+
+          if [ -z "$SECTION" ]; then
+            SECTION="- SDK update from merged PR #${{ github.event.pull_request.number }}."
+          fi
+
+          {
+            printf "# Changelog\n\n"
+            printf "## %s\n\n" "$VERSION"
+            printf "%s\n\n" "$SECTION"
+            awk 'NR>1' "$FILE" 2>/dev/null || true
+          } > /tmp/CHANGELOG.new
+
+          mv /tmp/CHANGELOG.new "$FILE"
+
+      - name: Commit + tag
+        run: |
+          VERSION="${{ steps.version.outputs.new_version }}"
+          git config user.name "Moorsyl Bot"
+          git config user.email "bot@moorsyl.com"
+          git add pom.xml CHANGELOG.md
+          git commit -m "chore: release v$VERSION"
+          git tag "v$VERSION"
+          git push origin main
+          git push origin "v$VERSION"
