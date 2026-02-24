@@ -18,8 +18,10 @@ jobs:
           server-id: central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Import GPG key
+        run: echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d | gpg --import --batch
 
       - name: Publish
         run: mvn deploy -P release --batch-mode --no-transfer-progress
