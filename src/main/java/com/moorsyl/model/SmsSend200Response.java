@@ -55,6 +55,11 @@ public class SmsSend200Response {
   @javax.annotation.Nullable
   private Object accepted = null;
 
+  public static final String SERIALIZED_NAME_MESSAGE_ID = "messageId";
+  @SerializedName(SERIALIZED_NAME_MESSAGE_ID)
+  @javax.annotation.Nonnull
+  private String messageId;
+
   public static final String SERIALIZED_NAME_IDEMPOTENCY_KEY = "idempotencyKey";
   @SerializedName(SERIALIZED_NAME_IDEMPOTENCY_KEY)
   @javax.annotation.Nonnull
@@ -84,6 +89,25 @@ public class SmsSend200Response {
 
   public void setAccepted(@javax.annotation.Nullable Object accepted) {
     this.accepted = accepted;
+  }
+
+
+  public SmsSend200Response messageId(@javax.annotation.Nonnull String messageId) {
+    this.messageId = messageId;
+    return this;
+  }
+
+  /**
+   * Get messageId
+   * @return messageId
+   */
+  @javax.annotation.Nonnull
+  public String getMessageId() {
+    return messageId;
+  }
+
+  public void setMessageId(@javax.annotation.Nonnull String messageId) {
+    this.messageId = messageId;
   }
 
 
@@ -136,13 +160,14 @@ public class SmsSend200Response {
     }
     SmsSend200Response smsSend200Response = (SmsSend200Response) o;
     return Objects.equals(this.accepted, smsSend200Response.accepted) &&
+        Objects.equals(this.messageId, smsSend200Response.messageId) &&
         Objects.equals(this.idempotencyKey, smsSend200Response.idempotencyKey) &&
         Objects.equals(this.organizationId, smsSend200Response.organizationId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(accepted, idempotencyKey, organizationId);
+    return Objects.hash(accepted, messageId, idempotencyKey, organizationId);
   }
 
   @Override
@@ -150,6 +175,7 @@ public class SmsSend200Response {
     StringBuilder sb = new StringBuilder();
     sb.append("class SmsSend200Response {\n");
     sb.append("    accepted: ").append(toIndentedString(accepted)).append("\n");
+    sb.append("    messageId: ").append(toIndentedString(messageId)).append("\n");
     sb.append("    idempotencyKey: ").append(toIndentedString(idempotencyKey)).append("\n");
     sb.append("    organizationId: ").append(toIndentedString(organizationId)).append("\n");
     sb.append("}");
@@ -175,12 +201,14 @@ public class SmsSend200Response {
     // a set of all properties/fields (JSON key names)
     openapiFields = new HashSet<String>();
     openapiFields.add("accepted");
+    openapiFields.add("messageId");
     openapiFields.add("idempotencyKey");
     openapiFields.add("organizationId");
 
     // a set of required properties/fields (JSON key names)
     openapiRequiredFields = new HashSet<String>();
     openapiRequiredFields.add("accepted");
+    openapiRequiredFields.add("messageId");
     openapiRequiredFields.add("idempotencyKey");
     openapiRequiredFields.add("organizationId");
   }
@@ -213,6 +241,9 @@ public class SmsSend200Response {
         }
       }
         JsonObject jsonObj = jsonElement.getAsJsonObject();
+      if (!jsonObj.get("messageId").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format("Expected the field `messageId` to be a primitive type in the JSON string but got `%s`", jsonObj.get("messageId").toString()));
+      }
       if (!jsonObj.get("idempotencyKey").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `idempotencyKey` to be a primitive type in the JSON string but got `%s`", jsonObj.get("idempotencyKey").toString()));
       }

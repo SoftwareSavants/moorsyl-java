@@ -176,8 +176,11 @@ components:
         organizationId: organizationId
         idempotencyKey: idempotencyKey
         accepted: ""
+        messageId: messageId
       properties:
         accepted: {}
+        messageId:
+          type: string
         idempotencyKey:
           type: string
         organizationId:
@@ -185,6 +188,7 @@ components:
       required:
       - accepted
       - idempotencyKey
+      - messageId
       - organizationId
     sms_get_200_response:
       example:
