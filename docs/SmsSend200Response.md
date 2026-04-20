@@ -8,6 +8,7 @@
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
 |**accepted** | **Object** |  |  |
+|**messageId** | **String** |  |  |
 |**idempotencyKey** | **String** |  |  |
 |**organizationId** | **String** |  |  |
 
