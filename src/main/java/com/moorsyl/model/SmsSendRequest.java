@@ -52,7 +52,7 @@ import com.moorsyl.JSON;
 public class SmsSendRequest {
   public static final String SERIALIZED_NAME_TO = "to";
   @SerializedName(SERIALIZED_NAME_TO)
-  @javax.annotation.Nonnull
+  @javax.annotation.Nullable
   private String to;
 
   public static final String SERIALIZED_NAME_FROM = "from";
@@ -73,7 +73,7 @@ public class SmsSendRequest {
   public SmsSendRequest() {
   }
 
-  public SmsSendRequest to(@javax.annotation.Nonnull String to) {
+  public SmsSendRequest to(@javax.annotation.Nullable String to) {
     this.to = to;
     return this;
   }
@@ -82,12 +82,12 @@ public class SmsSendRequest {
    * Get to
    * @return to
    */
-  @javax.annotation.Nonnull
+  @javax.annotation.Nullable
   public String getTo() {
     return to;
   }
 
-  public void setTo(@javax.annotation.Nonnull String to) {
+  public void setTo(@javax.annotation.Nullable String to) {
     this.to = to;
   }
 
@@ -207,7 +207,6 @@ public class SmsSendRequest {
 
     // a set of required properties/fields (JSON key names)
     openapiRequiredFields = new HashSet<String>();
-    openapiRequiredFields.add("to");
     openapiRequiredFields.add("body");
   }
 
@@ -239,7 +238,7 @@ public class SmsSendRequest {
         }
       }
         JsonObject jsonObj = jsonElement.getAsJsonObject();
-      if (!jsonObj.get("to").isJsonPrimitive()) {
+      if ((jsonObj.get("to") != null && !jsonObj.get("to").isJsonNull()) && !jsonObj.get("to").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `to` to be a primitive type in the JSON string but got `%s`", jsonObj.get("to").toString()));
       }
       if ((jsonObj.get("from") != null && !jsonObj.get("from").isJsonNull()) && !jsonObj.get("from").isJsonPrimitive()) {

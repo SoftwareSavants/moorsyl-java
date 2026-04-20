@@ -46,6 +46,14 @@ public class SmsSend200ResponseTest {
     }
 
     /**
+     * Test the property 'messageId'
+     */
+    @Test
+    public void messageIdTest() {
+        // TODO: test messageId
+    }
+
+    /**
      * Test the property 'idempotencyKey'
      */
     @Test
